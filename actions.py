@@ -51,6 +51,10 @@ class ActionWithDirection(Action):
     
     def perform(self) -> None:
         raise NotImplementedError
+
+class WaitAction(Action):
+    def perform(self) -> None:
+        pass
     
 class MovementAction(ActionWithDirection):
 
