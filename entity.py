@@ -8,6 +8,8 @@ if TYPE_CHECKING:
     from components.fighter import Fighter
     from game_map import GameMap
 
+from render_order import RenderOrder
+
 T = TypeVar("T", bound="Entity")
 
 class Entity:
@@ -17,12 +19,13 @@ class Entity:
 
     gamemap: GameMap
 
-    def __init__(self,  gamemap: Optional[GameMap] = None, x: int = 0, y: int = 0, char: str = "?", color: tuple[int, int, int] = (255, 255, 255), name: str = "<Unnamed>", blocks_movement: bool = False):
+    def __init__(self,  gamemap: Optional[GameMap] = None, x: int = 0, y: int = 0, char: str = "?", color: tuple[int, int, int] = (255, 255, 255), name: str = "<Unnamed>", blocks_movement: bool = False, render_order: RenderOrder = RenderOrder.CORPSE):
         self.x = x
         self.y = y
         self.char = char
         self.color = color
         self.name = name
+        self.render_order = render_order
         self.blocks_movement = blocks_movement
         if gamemap:
             # If gamemap isn't provided now then it will be set later.
@@ -72,6 +75,7 @@ class Actor(Entity):
             color=color,
             name=name,
             blocks_movement=True,
+            render_order=RenderOrder.ACTOR,
         )
 
         self.ai: Optional[BaseAI] = ai_cls(self)
