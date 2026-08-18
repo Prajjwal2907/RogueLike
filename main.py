@@ -12,11 +12,11 @@ def main():
     map_width = 180
     map_height = 90
 
-    room_max_size = 10
+    room_max_size = 15
     room_min_size = 6
     max_rooms = 30
 
-    max_enemies_per_room = 2
+    max_enemies_per_room = 4
 
     tileset = tcod.tileset.load_tilesheet(
         "dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
