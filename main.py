@@ -3,14 +3,14 @@ from engine import Engine
 import copy
 import entity_factories
 from procgen import generate_dungeon
-
+import color
 
 def main():
-    screen_width = 80
-    screen_height = 50
+    screen_width = 180
+    screen_height = 100
 
-    map_width = 80
-    map_height = 45
+    map_width = 180
+    map_height = 90
 
     room_max_size = 10
     room_min_size = 6
@@ -29,6 +29,10 @@ def main():
     engine.game_map = generate_dungeon(max_rooms = max_rooms, room_min_size = room_min_size, room_max_size = room_max_size, map_width = map_width, map_height = map_height, max_monsters_per_room = max_enemies_per_room, engine = engine)
     engine.update_fov()
 
+    engine.message_log.add_message(
+        "Hello and welcome, adventurer, to yet another dungeon!", color.welcome_text
+    )
+
     with tcod.context.new_terminal(
         screen_width,
         screen_height,
@@ -38,10 +42,12 @@ def main():
     ) as context:
         root_console = tcod.Console(screen_width,screen_height, order = "F")
         while True:
-            engine.render(console = root_console, context = context)
-            events = tcod.event.wait()
+            root_console.clear()
+            engine.event_handler.on_render(console=root_console)
+            context.present(root_console)
 
-            engine.event_handler.handle_events()
+
+            engine.event_handler.handle_events(context)
 
             
 if __name__ == "__main__":

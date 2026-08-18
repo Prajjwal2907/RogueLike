@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tcod.context import Context
 from tcod.console import Console
 from tcod.map import compute_fov
+from render_functions import render_bar, render_names_at_mouse_location
+
+from message_log import MessageLog
 
 from input_handlers import MainGameEventHandler
 
@@ -19,7 +21,10 @@ class Engine:
     def __init__(self, player: Actor):
         self.event_handler: EventHandler = MainGameEventHandler(self)
         self.player = player
+        self.message_log = MessageLog()
+        self.mouse_location = (0, 0)
 
+    
     def handle_enemy_turns(self) -> None:
         for entity in set(self.game_map.actors) - {self.player}:
             if entity.ai:
@@ -34,15 +39,16 @@ class Engine:
         self.game_map.explored |= self.game_map.visible
 
 
-    def render(self, console: Console, context: Context) -> None:
+    def render(self, console: Console) -> None:
         self.game_map.render(console=console)
 
-        console.print(
-            x=1,
-            y=47,
-            string=f"HP: {self.player.fighter.hp}/{self.player.fighter.max_hp}",
+        self.message_log.render(console=console, x=50, y=89, width=40, height=5)
+
+        render_bar(
+            console=console,
+            current_value=self.player.fighter.hp,
+            maximum_value=self.player.fighter.max_hp,
+            total_width=20,
         )
 
-        context.present(console)
-
-        console.clear()
+        render_names_at_mouse_location(console=console, x=21, y=88, engine=self)
